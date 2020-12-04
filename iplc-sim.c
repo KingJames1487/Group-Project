@@ -190,24 +190,29 @@ void iplc_sim_init( int index, int blocksize, int assoc )
 
 void iplc_sim_LRU_replace_on_miss( int index, int tag )
    {
-   	int i=0, j=0;
-	
-   /* Note: item 0 is the least recently used cache slot -- so replace it */
-       	for (i = cache_assoc - 1; i > 0; i--) {
-        	cache[index].cache_items[ i ] = cache[index].cache_items[ i - 1 ];
-    	}
-   /* percolate everything up */
-	cache[index].cache_items[0].tag = tag;
-   } 
+   int i=0, j=0;
+    j = cache[index].replacement[0];
+    for (i = cache_assoc - 1; i > 0; i--) {
+        cache[index].replacement[ i ] = cache[index].replacement[ i - 1 ];
+    }
+    cache[index].replacement[cache_assoc-1] = j;
+    cache[index].assoc[j].tag = tag; 
+    cache[index].assoc[j].vb = 1
+    /*where to put tag corresponding to j, add two more lines, valid bit
+
+   / Note: item 0 is the least recently used cache slot -- so replace it */
+   }
 
 void iplc_sim_LRU_update_on_hit( int index, int assoc )
    {
    	int i=0, j=0;
-	int hit = cache[index].cache_items[assoc]
-	for (i = assoc; i < cache_assoc; i++){
-      		cache[index].cache_items[i] = cache[index].cache_items[i+1];
+	j = cache[index].replacement[assoc];
+	for (i = cache_assoc-1; i > assoc; i--){
+      		cache[index].replacement[i] = cache[index].replacement[i-1];
 	}
-	cache[index].cache_items[cache_assoc-1] = hit;
+	cache[index].replacement[cache_assoc-1] = j;
+    	cache[index].assoc[j].tag = tag; 
+    	cache[index].assoc[j].vb = 1
    } 
 
 int iplc_sim_trap_address( unsigned int address )
