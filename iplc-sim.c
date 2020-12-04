@@ -352,24 +352,40 @@ void iplc_sim_process_pipeline_sw( int src_reg, int base_reg, unsigned int data_
 
 void iplc_sim_process_pipeline_branch( int reg1, int reg2)
 {
-  /* you gotta do this one */
+  iplc_sim_push_pipeline_stage();
+
+  pipeline[FETCH].itype = BRANCH;
+  pipeline[FETCH].instruction_address = instruction_address;
+
+  pipeline[FETCH].stage.branch.reg1 = reg1;
+  pipeline[FETCH].stage.branch.reg2 = reg2;
 }
 
-void iplc_sim_process_pipeline_jump( char *instruction )
+void iplc_sim_process_pipeline_jump( char instruction )
 {
-  /* you gotta do this one */
+  iplc_sim_push_pipeline_stage();
+
+  pipeline[FETCH].itype = JUMP;
+  pipeline[FETCH].instruction_address = instruction_address;
+  / you gotta do this one /
+  /**need to do something with instruction */
 }
 
 void iplc_sim_process_pipeline_syscall( )
 {
-  /* you gotta do this one */
+  iplc_sim_push_pipeline_stage();
+
+  pipeline[FETCH].itype = SYSCALL;
+  pipeline[FETCH].instruction_address = instruction_address;
 }
 
 void iplc_sim_process_pipeline_nop( )
 {
-  /* you gotta do this one */
-}
+  iplc_sim_push_pipeline_stage();
 
+  pipeline[FETCH].itype = NOP;
+  pipeline[FETCH].instruction_address = instruction_address;
+}
 /************************************************************************************************/
 /* parse Function *******************************************************************************/
 /************************************************************************************************/
