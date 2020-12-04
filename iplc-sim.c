@@ -190,27 +190,34 @@ void iplc_sim_init( int index, int blocksize, int assoc )
 
 void iplc_sim_LRU_replace_on_miss( int index, int tag )
    {
-   int i=0, j=0;
-
+   	int i=0, j=0;
+	
    /* Note: item 0 is the least recently used cache slot -- so replace it */
-       
+       	for (i = cache_assoc - 1; i > 0; i--) {
+        	cache[index].cache_items[ i ] = cache[index].cache_items[ i - 1 ];
+    	}
    /* percolate everything up */
+	cache[index].cache_items[0].tag = tag;
    } 
 
 void iplc_sim_LRU_update_on_hit( int index, int assoc )
    {
-   int i=0, j=0;
-
+   	int i=0, j=0;
+	int hit = cache[index].cache_items[assoc]
+	for (i = assoc; i < cache_assoc; i++){
+      		cache[index].cache_items[i] = cache[index].cache_items[i+1];
+	}
+	cache[index].cache_items[cache_assoc-1] = hit;
    } 
 
 int iplc_sim_trap_address( unsigned int address )
    {
-   int i=0, index=0;
-   int tag=0;
-   int hit=0;
-
-   /* expects you to return 1 for hit, 0 for miss */
-   return( hit );
+   	int i=0, index=0;
+   	int tag=0;
+   	int hit=0;
+	
+   	/* expects you to return 1 for hit, 0 for miss */
+   	return( hit );
    }
 
 void iplc_sim_finalize()
@@ -290,16 +297,18 @@ void iplc_sim_push_pipeline_stage()
 
   
   /* 2. Check for BRANCH and correct/incorrect Branch Prediction */
-
+	
   /* 3. Check for LW delays due to use in ALU stage and if data hit/miss  
    *    add delay cycles if needed.
    */
-
+	
   /* 4. Check for SW mem acess and data miss .. add delay cycles if needed */
+	
   /* 5. Increment pipe_cycles 1 cycle for normal processing */
+	
   /* 6. push stages thru MEM->WB, ALU->MEM, DECODE->ALU, FETCH->ALU */
-  
-  // 7. This is a give'me -- Reset the FETCH stage to NOP via bezero */
+  	
+  // 7. This is a give'me -- Reset the FETCH stage to NOP via bzero */
   bzero( &(pipeline[FETCH]), sizeof(pipeline_t) );
 }
 
