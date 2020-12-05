@@ -194,8 +194,8 @@ void iplc_sim_LRU_replace_on_miss( int index, int tag )
 	//assign j to "oldest" cache slot
     j = cache[index].replacement[0];
 	//Cycle through replacement cache shifting every variable to a lower value "older"
-    for (i = 1; i < cache_assoc - 1; i++) {
-        cache[index].replacement[ i ] = cache[index].replacement[ i - 1 ];
+    for (i = 1; i < cache_assoc; i++) {
+        cache[index].replacement[i - 1] = cache[index].replacement[ i ];
     }
 	//Make the "newest" cache slot (was empty) the previous "oldest"
     cache[index].replacement[cache_assoc-1] = j;
