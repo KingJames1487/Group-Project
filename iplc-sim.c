@@ -211,8 +211,8 @@ void iplc_sim_LRU_update_on_hit( int index, int assoc )
 	//assign j to hit cache slot
 	j = cache[index].replacement[assoc];
 	//cycle from hit slot to the end, shifting every variable to a lower value ("older")
-	for (i = cache_assoc-1; i > assoc; i--){
-      		cache[index].replacement[i] = cache[index].replacement[i-1];
+	for (i = assoc; i < cache_assoc-1; i++){
+      		cache[index].replacement[i] = cache[index].replacement[i+1];
 	}
 		//Make the "newest" cache slot the hit slot
 	cache[index].replacement[cache_assoc-1] = j;
