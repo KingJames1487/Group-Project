@@ -343,8 +343,13 @@ void iplc_sim_push_pipeline_stage()
   /* 4. Check for SW mem acess and data miss .. add delay cycles if needed */
 	
   /* 5. Increment pipe_cycles 1 cycle for normal processing */
+	 pipeline_cycles++;
 	
   /* 6. push stages thru MEM->WB, ALU->MEM, DECODE->ALU, FETCH->ALU */
+	pipeline[WRITEBACK] = pipeline[MEM];
+    	pipeline[MEM] = pipeline[ALU];
+    	pipeline[ALU] = pipeline[DECODE];
+    	pipeline[ALU] = pipeline[FETCH];
   	
   // 7. This is a give'me -- Reset the FETCH stage to NOP via bzero */
   bzero( &(pipeline[FETCH]), sizeof(pipeline_t) );
