@@ -217,12 +217,43 @@ void iplc_sim_LRU_update_on_hit( int index, int assoc )
 
 int iplc_sim_trap_address( unsigned int address )
    {
-   	int i=0, index=0;
-   	int tag=0;
-   	int hit=0;
-	
-   	/* expects you to return 1 for hit, 0 for miss */
-   	return( hit );
+   int i=0, index=0;
+   int tag=0;
+   int hit=0;
+
+   //Find tag by bitwise shifting block offset and index bits
+   //Find index by removing bl. offset bits. Then use modulus 2^n where n is the amount of bits of index to isolate index bits
+   cache_access += 1;
+   index = (address >> cache_blockoffsetbits) % pow(2,cache_index)
+   tag = address >> (cache_blockoffsetbits + cache_index);
+
+   //For each level of associativity, check the tag and valid bit to see if the tag found is in cache and valid
+   for (i=0; i < cache_assoc; i++){
+     if(cache[index].replacement[i].tag == tag && cache[index].replacement[i].vb){
+       hit++;
+       cache_hit++;
+
+       //If not directly mapped, update the replacement array
+       if cache_assoc > 1 {
+         iplc_sim_LRU_update_on_hit(index, i);
+       }
+       break;
+     }
+   }
+   //If we miss, if not directly mapped, run the LRU miss function. If D.M., change out tag and vb
+   if (hit == 0){
+     cache_miss++;
+     if cache_assoc > 1 {
+       iplc_sim_LRU_replace_on_miss(index, tag);
+     }
+     else{
+       cache[index].replacement[0].tag = tag;
+       cache[index].replacement[0].vb = 1;
+     }
+   }
+
+   /* expects you to return 1 for hit, 0 for miss */
+   return( hit );
    }
 
 void iplc_sim_finalize()
