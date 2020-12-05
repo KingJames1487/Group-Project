@@ -227,7 +227,7 @@ int iplc_sim_trap_address( unsigned int address )
    //Find tag by bitwise shifting block offset and index bits
    //Find index by removing bl. offset bits. Then use modulus 2^n where n is the amount of bits of index to isolate index bits
    cache_access += 1;
-   index = (address >> cache_blockoffsetbits) % pow(2.0, double(cache_index));
+   index = (address >> cache_blockoffsetbits) % pow(2.0, (double)cache_index);
    tag = address >> (cache_blockoffsetbits + cache_index);
 
    //For each level of associativity, check the tag and valid bit to see if the tag found is in cache and valid
@@ -237,7 +237,7 @@ int iplc_sim_trap_address( unsigned int address )
        cache_hit++;
 
        //If not directly mapped, update the replacement array
-       if cache_assoc > 1 {
+       if (cache_assoc > 1) {
          iplc_sim_LRU_update_on_hit(index, i);
        }
        break;
