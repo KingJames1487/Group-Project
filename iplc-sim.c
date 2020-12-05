@@ -196,11 +196,13 @@ void iplc_sim_LRU_replace_on_miss( int index, int tag )
 	//Cycle through replacement cache shifting every variable to a lower value "older"
     for (i = 1; i < cache_assoc; i++) {
         cache[index].replacement[i - 1] = cache[index].replacement[ i ];
+	cache[index].assoc[i - 1] = cache[index].assoc[ i ];
     }
 	//Make the "newest" cache slot (was empty) the previous "oldest"
     cache[index].replacement[cache_assoc-1] = j;
-    cache[index].assoc[j].tag = tag; 
-    cache[index].assoc[j].vb = 1;
+    cache[index].assoc[cache_assoc-1] = j
+    cache[index].assoc[cache_assoc-1].tag = tag; 
+    cache[index].assoc[cache_assoc-1].vb = 1;
 
    /* Note: item 0 is the least recently used cache slot -- so replace it */
    }
@@ -212,10 +214,12 @@ void iplc_sim_LRU_update_on_hit( int index, int assoc )
 	j = cache[index].replacement[assoc];
 	//cycle from hit slot to the end, shifting every variable to a lower value ("older")
 	for (i = assoc; i < cache_assoc-1; i++){
-      		cache[index].replacement[i] = cache[index].replacement[i+1];
-	}
-		//Make the "newest" cache slot the hit slot
-	cache[index].replacement[cache_assoc-1] = j;
+              cache[index].replacement[i] = cache[index].replacement[i+1];
+              cache[index].assoc[i] = cache[index].assoc[i+1];
+    	}
+        //Make the "newest" cache slot the hit slot
+    	cache[index].replacement[cache_assoc-1] = j;
+        cache[index].assoc[cache_assoc-1] = j;
    } 
 
 int iplc_sim_trap_address( unsigned int address )
