@@ -407,6 +407,7 @@ void iplc_sim_process_pipeline_jump( char instruction )
   pipeline[FETCH].instruction_address = instruction_address;
 
   /**need to do something with instruction */
+  pipeline[FETCH].stage.jump.instruction = instruction;
 }
 
 void iplc_sim_process_pipeline_syscall( )
