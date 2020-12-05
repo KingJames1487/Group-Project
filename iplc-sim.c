@@ -300,7 +300,6 @@ void iplc_sim_push_pipeline_stage()
 	       pipeline[WRITEBACK].instruction_address, pipeline[WRITEBACK].itype, pipeline_cycles );
     }
 
-  
   /* 2. Check for BRANCH and correct/incorrect Branch Prediction */
 	
   /* 3. Check for LW delays due to use in ALU stage and if data hit/miss  
@@ -372,7 +371,7 @@ void iplc_sim_process_pipeline_jump( char instruction )
 
   pipeline[FETCH].itype = JUMP;
   pipeline[FETCH].instruction_address = instruction_address;
-  / you gotta do this one /
+
   /**need to do something with instruction */
 }
 
