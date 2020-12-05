@@ -399,15 +399,15 @@ void iplc_sim_process_pipeline_branch( int reg1, int reg2)
   pipeline[FETCH].stage.branch.reg2 = reg2;
 }
 
-void iplc_sim_process_pipeline_jump( char instruction )
+void iplc_sim_process_pipeline_jump( char* instruction )
 {
   iplc_sim_push_pipeline_stage();
 
   pipeline[FETCH].itype = JUMP;
   pipeline[FETCH].instruction_address = instruction_address;
 
-  /**need to do something with instruction */
-  pipeline[FETCH].stage.jump.instruction = instruction;
+  /* need to do something with instruction */
+  strcpy(pipeline[FETCH].stage.jump.instruction, instruction);
 }
 
 void iplc_sim_process_pipeline_syscall( )
