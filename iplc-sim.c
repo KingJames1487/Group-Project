@@ -191,31 +191,37 @@ void iplc_sim_init( int index, int blocksize, int assoc )
 void iplc_sim_LRU_replace_on_miss( int index, int tag )
    {
    int i=0, j=0;
-	//assign j to "oldest" cache slot
-    j = cache[index].replacement[0];
-	//Cycle through replacement cache shifting every variable to a lower value "older"
-    for (i = 1; i < cache_assoc; i++) {
-        cache[index].replacement[i - 1] = cache[index].replacement[ i ];
+	//Cycle through every cache and shift it down 1, (unless it is zero then save the index)
+    for (i = 0; i < cache_assoc; i++) {
+        if(cache[index].replacement[i] == 0){
+		//Save index
+		j = i;
+	}
+	else{
+		//Shift down to chop-block
+		cache[index].replacement[i]--;
+	}
     }
-    //Make the "newest" cache slot (was empty) the previous "oldest"
-    cache[index].replacement[cache_assoc-1] = j;
+    //Change value at replacement to be the "newest" value
+    cache[index].replacement[j] = cache_assoc-1;
     cache[index].assoc[j].tag = tag; 
     cache[index].assoc[j].vb = 1;
-
-   /* Note: item 0 is the least recently used cache slot -- so replace it */
    }
 
 void iplc_sim_LRU_update_on_hit( int index, int assoc )
    {
    	int i=0, j=0;
-	//assign j to hit cache slot
+	//assign j to saved value at hit
 	j = cache[index].replacement[assoc];
-	//cycle from hit slot to the end, shifting every variable to a lower value ("older")
-	for (i = assoc; i < cache_assoc-1; i++){
-              cache[index].replacement[i] = cache[index].replacement[i+1];
-    	}
-        //Make the "newest" cache slot the hit slot
-    	cache[index].replacement[cache_assoc-1] = j;
+	for(i =0; i < cache_assoc; i++){
+		//condition to shift if larger than found value
+     		if ( cache[index].replacement[i] > j){
+			//shift it down
+          		cache[index].replacement[i]--;
+     		}
+	}
+        //Make the hit slot the "newest" cache slot
+    	cache[index].replacement[assoc] = cache_assoc-1;
    } 
 
 int iplc_sim_trap_address( unsigned int address )
