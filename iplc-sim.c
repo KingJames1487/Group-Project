@@ -346,7 +346,6 @@ void iplc_sim_push_pipeline_stage()
    *    add delay cycles if needed.
    */
   if (pipeline[MEM].itype == LW){
-      inserted_nop = 0;
       data_hit = iplc_sim_trap_address(pipeline[MEM].stage.lw.data_address);
       if(!data_hit){
         printf("DATA MISS:\t Address 0x%x \n", pipeline[MEM].stage.lw.data_address);
