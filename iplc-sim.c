@@ -342,6 +342,7 @@ void iplc_sim_push_pipeline_stage()
 
   /* 2. Check for BRANCH and correct/incorrect Branch Prediction */
   if (pipeline[DECODE].itype == BRANCH) {
+	//Check if the branch has been taken and if the fetch address is 4 more than decode address
   	if (branch_taken) {
 	    if (pipelne[FETCH].instruction_address - pipline[DECODE].instruction_address == 4) {
 	        //Our branch predict was wrong
