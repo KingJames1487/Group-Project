@@ -70,7 +70,7 @@ unsigned int branch_predict_taken=0;
 unsigned int branch_count=0;
 unsigned int correct_branch_predictions=0;
 
-unsigned int debug=0;
+unsigned int debug=1;
 unsigned int dump_pipeline=1;
 
 enum instruction_type {NOP, RTYPE, LW, SW, BRANCH, JUMP, JAL, SYSCALL};
