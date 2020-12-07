@@ -358,6 +358,7 @@ void iplc_sim_push_pipeline_stage()
 				correct_branch_predictions += 1;
 			} else {
 				//We predicted incorrectly
+				inserted_nop += 1;
 			}
 		} else {
 			//The branch was not taken, did we predict correctly?
@@ -366,6 +367,7 @@ void iplc_sim_push_pipeline_stage()
 				correct_branch_predictions += 1;
 			} else {
 				//We predicted incorrectly
+				inserted_nop += 1;
 			}
 		}
 	}
@@ -408,13 +410,15 @@ void iplc_sim_push_pipeline_stage()
     }
   }
   /* 5. Increment pipe_cycles 1 cycle for normal processing */
-	 pipeline_cycles++;
+  pipeline_cycles++;
 	
   /* 6. push stages thru MEM->WB, ALU->MEM, DECODE->ALU, FETCH->DECODE */
+  if( !inserted_nop ) {
 	pipeline[WRITEBACK] = pipeline[MEM];
     	pipeline[MEM] = pipeline[ALU];
     	pipeline[ALU] = pipeline[DECODE];
     	pipeline[DECODE] = pipeline[FETCH];
+  }
   	
   // 7. This is a give'me -- Reset the FETCH stage to NOP via bzero */
   bzero( &(pipeline[FETCH]), sizeof(pipeline_t) );
