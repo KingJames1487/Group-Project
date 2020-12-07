@@ -358,7 +358,7 @@ void iplc_sim_push_pipeline_stage()
 				correct_branch_predictions += 1;
 			} else {
 				//We predicted incorrectly
-				inserted_nop += 1;
+				inserted_nop = 1;
 			}
 		} else {
 			//The branch was not taken, did we predict correctly?
@@ -367,10 +367,30 @@ void iplc_sim_push_pipeline_stage()
 				correct_branch_predictions += 1;
 			} else {
 				//We predicted incorrectly
-				inserted_nop += 1;
+				inserted_nop = 1;
 			}
 		}
 	}
+	//Shifting Pipeline when nop is inserted
+	if( inserted_nop ) {
+		pipeline[WRITEBACK] = pipeline[MEM];
+  		pipeline[MEM] = pipeline[ALU];
+  		pipeline[ALU] = pipeline[DECODE];
+ 		pipeline[DECODE].itype = NOP;
+		pipeline[FETCH].instruction_address = 0;
+		//Update Cycle Count
+		pipeline_cycles++;
+		//Retire Writeback
+		if( pipeline[WRITEBACK].instruction_address ){
+		      instruction_count++;
+		      if( debug ) {
+			  	  printf("DEBUG: Retired Instruction at 0x%x, Type %d, at Time %u \n", 
+			       pipeline[WRITEBACK].instruction_address, pipeline[WRITEBACK].itype, pipeline_cycles );
+			  }
+		}
+	}
+	//Reset insert nop to keep #3 values pure
+	insert_nop = 0;
   }
 	
   /* 3. Check for LW delays due to use in ALU stage and if data hit/miss  
@@ -413,13 +433,11 @@ void iplc_sim_push_pipeline_stage()
   pipeline_cycles++;
 	
   /* 6. push stages thru MEM->WB, ALU->MEM, DECODE->ALU, FETCH->DECODE */
-  if( !inserted_nop ) {
-	pipeline[WRITEBACK] = pipeline[MEM];
-    	pipeline[MEM] = pipeline[ALU];
-    	pipeline[ALU] = pipeline[DECODE];
-    	pipeline[DECODE] = pipeline[FETCH];
-  }
-  	
+  pipeline[WRITEBACK] = pipeline[MEM];
+  pipeline[MEM] = pipeline[ALU];
+  pipeline[ALU] = pipeline[DECODE];
+  pipeline[DECODE] = pipeline[FETCH];
+    	
   // 7. This is a give'me -- Reset the FETCH stage to NOP via bzero */
   bzero( &(pipeline[FETCH]), sizeof(pipeline_t) );
 }
