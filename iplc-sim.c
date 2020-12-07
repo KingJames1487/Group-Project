@@ -387,7 +387,7 @@ void iplc_sim_push_pipeline_stage()
         printf("DATA HIT:\t Address 0x%x \n", pipeline[MEM].stage.lw.data_address);
       }
   /*checking if due to ALU stage*/
-      if(pipeline[ALU].itype == RTYPE && (pipeline[ALU].stage.rtype.reg1 == pipeline[MEM].stage.lw.dest_reg || pipeline[ALU].stage.rtype.reg2 == pipeline[MEM].stage.lw.dest_reg)){
+      if(pipeline[ALU].itype == RTYPE && (pipeline[ALU].stage.rtype.reg1 == pipeline[MEM].stage.lw.dest_reg || pipeline[ALU].stage.rtype.reg2_or_constant == pipeline[MEM].stage.lw.dest_reg)){
         inserted_nop = 1;
         pipeline_cycles++;
       }
