@@ -331,7 +331,7 @@ void iplc_sim_push_pipeline_stage()
 {
   int i;
   int data_hit=1;
-  int branch_taken=0;
+  int branch_taken=branch_predict_taken;
   int inserted_nop=0;
 
   /* 1. Count WRITEBACK stage is "retired" -- This I'm giving you */
