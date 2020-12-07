@@ -346,33 +346,28 @@ void iplc_sim_push_pipeline_stage()
   /* 2. Check for BRANCH and correct/incorrect Branch Prediction */
   if (pipeline[DECODE].itype == BRANCH) {
 	branch_count += 1;
-	//Check if the branch has been taken and if the fetch address is 4 more than decode address
-  	if (branch_taken) {
-	    if (pipeline[FETCH].instruction_address - pipeline[DECODE].instruction_address == 4) {
-	        //Our branch predict was wrong
-		inserted_nop = 1;
-		    
-	    } else {
-		//Our branch predict was right
-		correct_branch_predictions += 1;
-		    
-		printf("DEBUG: Branch Taken: FETCH addr = 0x%x, DECODE instr address = 0x%x \n", 
-		       pipeline[FETCH].instruction_address, pipeline[DECODE].instruction_address );
-		    
-	    }
-	} else {
-	    if (pipeline[FETCH].instruction_address - pipeline[DECODE].instruction_address == 4) {
-	        //Our branch predict was right
-		correct_branch_predictions += 1;
-		    
-	    } else {
-		//Our branch predict was wrong  
-		inserted_nop = 1;
-		pipeline_cycles += 1;
-		    
-		printf("DEBUG: Branch Taken: FETCH addr = 0x%x, DECODE instr address = 0x%x \n", 
-		       pipeline[FETCH].instruction_address, pipeline[DECODE].instruction_address );
-	    }
+	if( pipeline[FETCH].instruction_address ) {
+		//Is the branch taken in this scenario?
+	    if( pipeline[DECODE].instruction_address + 4 != pipeline[FETCH].instruction_address ) {
+		    if( debug ) {
+				printf("DEBUG: Branch Taken: FETCH addr = 0x%x, DECODE instr addr = 0x%x \n", 
+					   pipeline[FETCH].instruction_address, pipeline[DECODE].instruction_address );
+			}//Did we predict correctly?
+			if( branch_taken ) {
+				//We predicted correctly
+				correct_branch_predictions += 1;
+			} else {
+				//We predicted incorrectly
+			}
+		} else {
+			//The branch was not taken, did we predict correctly?
+			if( !branch_taken ) {
+				//We predicted correctly
+				correct_branch_predictions += 1;
+			} else {
+				//We predicted incorrectly
+			}
+		}
 	}
   }
 	
