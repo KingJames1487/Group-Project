@@ -231,17 +231,18 @@ int iplc_sim_trap_address( unsigned int address )
    int hit=0;
 
    //Find tag by bitwise shifting block offset and index bits
-   //Find index by removing bl. offset bits. Then use modulus 2^n where n is the amount of bits of index to isolate index bits
+   //Find index by removing block offset bits. Then use modulus 2^n where n is the amount of bits of index to isolate index bits
    cache_access += 1;
    index = (address >> cache_blockoffsetbits) % (1 << cache_index);
    tag = address >> (cache_blockoffsetbits + cache_index);
-   printf("Address 0x%x: Tag= %d, Index= %d \n", address, tag, index);
+   printf("Address %x: Tag= %x, Index= %d \n", address, tag, index);
 	
    //For each level of associativity, check the tag and valid bit to see if the tag found is in cache and valid
    for (i=0; i < cache_assoc; i++){
      if(cache[index].assoc[i].tag == tag && cache[index].assoc[i].vb){
        hit++;
        cache_hit++;
+       printf("Addr %x HIT \n", address);
 
        //If not directly mapped, update the replacement array
        if (cache_assoc > 1) {
@@ -253,6 +254,7 @@ int iplc_sim_trap_address( unsigned int address )
    //If we miss, if not directly mapped, run the LRU miss function. If D.M., change out tag and vb
    if (hit == 0){
      cache_miss++;
+     printf("Addr %x MISS \n", address);
      if (cache_assoc > 1) {
        iplc_sim_LRU_replace_on_miss(index, tag);
      }
