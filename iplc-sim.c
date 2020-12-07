@@ -342,18 +342,33 @@ void iplc_sim_push_pipeline_stage()
 
   /* 2. Check for BRANCH and correct/incorrect Branch Prediction */
   if (pipeline[DECODE].itype == BRANCH) {
+	branch_count += 1;
 	//Check if the branch has been taken and if the fetch address is 4 more than decode address
   	if (branch_taken) {
 	    if (pipelne[FETCH].instruction_address - pipline[DECODE].instruction_address == 4) {
 	        //Our branch predict was wrong
+		inserted_nop = 1;
+		    
 	    } else {
-		//Our branch predict was right    
+		//Our branch predict was right
+		correct_branch_predictions += 1;
+		    
+		printf("DEBUG: Branch Taken: FETCH addr = 0x%x, DECODE instr address = 0x%x", 
+		       pipeline[FETCH].instruction_address, pipeline[DECODE].instruction_address );
+		    
 	    }
 	} else {
 	    if (pipelne[FETCH].instruction_address - pipline[DECODE].instruction_address == 4) {
 	        //Our branch predict was right
+		correct_branch_predictions += 1;
+		    
 	    } else {
-		//Our branch predict was wrong    
+		//Our branch predict was wrong  
+		inserted_nop = 1;
+		pipeline_cycles += 1;
+		    
+		printf("DEBUG: Branch Taken: FETCH addr = 0x%x, DECODE instr address = 0x%x", 
+		       pipeline[FETCH].instruction_address, pipeline[DECODE].instruction_address );
 	    }
 	}
   }
@@ -397,11 +412,11 @@ void iplc_sim_push_pipeline_stage()
   /* 5. Increment pipe_cycles 1 cycle for normal processing */
 	 pipeline_cycles++;
 	
-  /* 6. push stages thru MEM->WB, ALU->MEM, DECODE->ALU, FETCH->ALU */
+  /* 6. push stages thru MEM->WB, ALU->MEM, DECODE->ALU, FETCH->DECODE */
 	pipeline[WRITEBACK] = pipeline[MEM];
     	pipeline[MEM] = pipeline[ALU];
     	pipeline[ALU] = pipeline[DECODE];
-    	pipeline[ALU] = pipeline[FETCH];
+    	pipeline[DECODE] = pipeline[FETCH];
   	
   // 7. This is a give'me -- Reset the FETCH stage to NOP via bzero */
   bzero( &(pipeline[FETCH]), sizeof(pipeline_t) );
