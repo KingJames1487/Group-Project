@@ -390,7 +390,7 @@ void iplc_sim_push_pipeline_stage()
 		}
 	}
 	//Reset insert nop to keep #3 values pure
-	insert_nop = 0;
+	inserted_nop = 0;
   }
 	
   /* 3. Check for LW delays due to use in ALU stage and if data hit/miss  
