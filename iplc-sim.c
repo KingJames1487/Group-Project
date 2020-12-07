@@ -235,7 +235,8 @@ int iplc_sim_trap_address( unsigned int address )
    cache_access += 1;
    index = (address >> cache_blockoffsetbits) % (1 << cache_index);
    tag = address >> (cache_blockoffsetbits + cache_index);
-
+   printf("Address 0x%x: Tag= %d, Index= %d \n", address, tag, index);
+	
    //For each level of associativity, check the tag and valid bit to see if the tag found is in cache and valid
    for (i=0; i < cache_assoc; i++){
      if(cache[index].assoc[i].tag == tag && cache[index].assoc[i].vb){
@@ -353,7 +354,7 @@ void iplc_sim_push_pipeline_stage()
 		//Our branch predict was right
 		correct_branch_predictions += 1;
 		    
-		printf("DEBUG: Branch Taken: FETCH addr = 0x%x, DECODE instr address = 0x%x", 
+		printf("DEBUG: Branch Taken: FETCH addr = 0x%x, DECODE instr address = 0x%x \n", 
 		       pipeline[FETCH].instruction_address, pipeline[DECODE].instruction_address );
 		    
 	    }
@@ -367,7 +368,7 @@ void iplc_sim_push_pipeline_stage()
 		inserted_nop = 1;
 		pipeline_cycles += 1;
 		    
-		printf("DEBUG: Branch Taken: FETCH addr = 0x%x, DECODE instr address = 0x%x", 
+		printf("DEBUG: Branch Taken: FETCH addr = 0x%x, DECODE instr address = 0x%x \n", 
 		       pipeline[FETCH].instruction_address, pipeline[DECODE].instruction_address );
 	    }
 	}
