@@ -475,10 +475,10 @@ void iplc_sim_process_pipeline_rtype( char *instruction, int dest_reg, int reg1,
 void iplc_sim_process_pipeline_lw( int dest_reg, int base_reg, unsigned int data_address)
 {
   iplc_sim_push_pipeline_stage();
-
+  //setting itype to correct processing to match function
   pipeline[FETCH].itype = LW;
   pipeline[FETCH].instruction_address = instruction_address;
-
+  //setting the variables for the struct from the parameters
   pipeline[FETCH].stage.lw.dest_reg = dest_reg;
   pipeline[FETCH].stage.lw.base_reg = base_reg;
   pipeline[FETCH].stage.lw.data_address = data_address;
@@ -487,10 +487,10 @@ void iplc_sim_process_pipeline_lw( int dest_reg, int base_reg, unsigned int data
 void iplc_sim_process_pipeline_sw( int src_reg, int base_reg, unsigned int data_address)
 {
   iplc_sim_push_pipeline_stage();
-
+  //setting itype to correct processing to match function
   pipeline[FETCH].itype = SW;
   pipeline[FETCH].instruction_address = instruction_address;
-
+  //setting the variables for the struct from the parameters
   pipeline[FETCH].stage.sw.src_reg = src_reg;
   pipeline[FETCH].stage.sw.base_reg = base_reg;
   pipeline[FETCH].stage.sw.data_address = data_address;
@@ -499,10 +499,10 @@ void iplc_sim_process_pipeline_sw( int src_reg, int base_reg, unsigned int data_
 void iplc_sim_process_pipeline_branch( int reg1, int reg2)
 {
   iplc_sim_push_pipeline_stage();
-
+  //setting itype to correct processing to match function
   pipeline[FETCH].itype = BRANCH;
   pipeline[FETCH].instruction_address = instruction_address;
-
+  //setting the variables for the struct from the parameters
   pipeline[FETCH].stage.branch.reg1 = reg1;
   pipeline[FETCH].stage.branch.reg2 = reg2;
 }
@@ -510,18 +510,18 @@ void iplc_sim_process_pipeline_branch( int reg1, int reg2)
 void iplc_sim_process_pipeline_jump( char* instruction )
 {
   iplc_sim_push_pipeline_stage();
-
+  //setting itype to correct processing to match function
   pipeline[FETCH].itype = JUMP;
   pipeline[FETCH].instruction_address = instruction_address;
 
-  /* need to do something with instruction */
+  //setting the variables for the struct from the parameters
   strcpy(pipeline[FETCH].stage.jump.instruction, instruction);
 }
 
 void iplc_sim_process_pipeline_syscall( )
 {
   iplc_sim_push_pipeline_stage();
-
+  //setting itype to correct processing to match function
   pipeline[FETCH].itype = SYSCALL;
   pipeline[FETCH].instruction_address = instruction_address;
 }
@@ -529,7 +529,7 @@ void iplc_sim_process_pipeline_syscall( )
 void iplc_sim_process_pipeline_nop( )
 {
   iplc_sim_push_pipeline_stage();
-
+  //setting itype to correct processing to match function
   pipeline[FETCH].itype = NOP;
   pipeline[FETCH].instruction_address = instruction_address;
 }
