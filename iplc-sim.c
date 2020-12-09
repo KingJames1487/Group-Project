@@ -397,16 +397,18 @@ void iplc_sim_push_pipeline_stage()
    *    add delay cycles if needed.
    */
   if (pipeline[MEM].itype == LW){
+      //checking whether data hit or not
       data_hit = iplc_sim_trap_address(pipeline[MEM].stage.lw.data_address);
       if(!data_hit){
         printf("DATA MISS:\t Address 0x%x \n", pipeline[MEM].stage.lw.data_address);
+	//add delay cycles when missed and subtract 1 for instruction
         pipeline_cycles += CACHE_MISS_DELAY;
         pipeline_cycles -= 1;
       }
       else{
         printf("DATA HIT:\t Address 0x%x \n", pipeline[MEM].stage.lw.data_address);
       }
-  /*checking if due to ALU stage*/
+      //checking if due to ALU stage
       if(pipeline[ALU].itype == RTYPE && 
 	   (pipeline[ALU].stage.rtype.reg1 == pipeline[MEM].stage.lw.dest_reg || pipeline[ALU].stage.rtype.reg2_or_constant == pipeline[MEM].stage.lw.dest_reg)){
         inserted_nop = 1;
@@ -424,16 +426,18 @@ void iplc_sim_push_pipeline_stage()
 		     }
 	}
       }
+      //when data isn't hit and inserted nop is true add delay cycle
       if(data_hit == 0 && inserted_nop == 1){
         pipeline_cycles -= 1;
       }
   }
   /* 4. Check for SW mem acess and data miss .. add delay cycles if needed */
     if (pipeline[MEM].itype == SW){
-
+    //checking if data was hit or not
     data_hit = iplc_sim_trap_address(pipeline[MEM].stage.sw.data_address);
     if(!data_hit){
       printf("DATA MISS:\t Address 0x%x \n", pipeline[MEM].stage.sw.data_address);
+      //add delay cycles when missed and subtract 1 for instruction
       pipeline_cycles += CACHE_MISS_DELAY;
       pipeline_cycles -= 1;
     }
